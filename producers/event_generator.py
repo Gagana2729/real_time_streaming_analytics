@@ -1,27 +1,30 @@
 import json
-import random
-import uuid
 import time
-from datetime import datetime
+import random
+from kafka import KafkaProducer
 
-EVENT_TYPES = ["click", "view", "purchase", "error"]
-PAGES = ["/home", "/product", "/checkout", "/search"]
-DEVICES = ["mobile", "desktop"]
+# Connect to Kafka
+producer = KafkaProducer(
+    bootstrap_servers='localhost:9092',
+    value_serializer=lambda x: json.dumps(x).encode('utf-8')
+)
 
-def generate_event():
-    return {
-        "event_id": str(uuid.uuid4()),
-        "user_id": f"u_{random.randint(1000,9999)}",
-        "event_type": random.choice(EVENT_TYPES),
-        "timestamp": datetime.utcnow().isoformat(),
-        "page": random.choice(PAGES),
-        "amount": round(random.uniform(10, 500), 2),
-        "session_id": f"s_{random.randint(10000,99999)}",
-        "device": random.choice(DEVICES)
+event_types = ["click", "purchase", "view"]
+
+while True:
+    event = {
+        "event_id": str(random.randint(1000, 9999)),
+        "user_id": f"user_{random.randint(1, 100)}",
+        "event_type": random.choice(event_types),
+        "timestamp": time.strftime('%Y-%m-%dT%H:%M:%SZ'),
+        "page": "/home",
+        "amount": round(random.uniform(10, 500), 2)
     }
 
-if __name__ == "__main__":
-    while True:
-        event = generate_event()
-        print(json.dumps(event))
-        time.sleep(0.01)
+    # Send to Kafka topic
+    producer.send("user-events", value=event)
+
+    print("Sent:", event)
+
+    time.sleep(0.5)  # controls speed
+>>>>>>> c44d5d015c4305ec24c2a5f1b6379938c6e5fba3

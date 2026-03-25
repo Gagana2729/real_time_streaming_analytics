@@ -1,0 +1,9 @@
+kafka:
+  bootstrap_servers: localhost:9092
+  topic: streaming-data
+
+spark:
+  batch_duration: 5
+
+anomaly:
+  threshold: 2.0

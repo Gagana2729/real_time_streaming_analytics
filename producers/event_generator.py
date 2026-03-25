@@ -27,4 +27,4 @@ while True:
     print("Sent:", event)
 
     time.sleep(0.5)  # controls speed
->>>>>>> c44d5d015c4305ec24c2a5f1b6379938c6e5fba3
+
